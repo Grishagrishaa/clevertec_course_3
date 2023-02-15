@@ -20,21 +20,22 @@ import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        task1();
-        task2();
-        task3();
-        task4();
-        task5();
-        task6();
-        task7();
-        task8();
-        task9();
-        task10();
-        task11();
-        task12();
-        task13();
-        task14();
-        task15();
+//        task1();
+//        task2();
+//        task3();
+//        task4();
+//        task5();
+//        task6();
+//        task7();
+//        task8();
+//        task9();
+//        task10();
+//        task11();
+//        task12();
+//        task13();
+//        task14();
+//        task15();
+        task16();
     }
     private static void task1() throws IOException {
         //https://www.baeldung.com/java-streams-multiple-filters-vs-condition#performance
@@ -268,7 +269,7 @@ public class Main {
 
     private static void task15() throws IOException {
         List<Flower> flowers = Util.getFlowers();
-        final double costPerLitre = 365 * 5 * 1.39 / 1000;
+        final double costPerLitreFor5Years = 365 * 5 * 1.39 / 1000;
         Set<String> vasesMaterial = Set.of("Glass", "Aluminium", "Steel");
         //Cubic meter of water = 1000 L
 
@@ -281,10 +282,54 @@ public class Main {
                 .filter(Flower::isShadePreferred)
                 .filter(flower -> flower.getFlowerVaseMaterial().stream()
                                   .anyMatch(vasesMaterial::contains))
-                .mapToDouble(flower -> flower.getPrice() + flower.getWaterConsumptionPerDay() * costPerLitre)
+                .mapToDouble(flower -> flower.getPrice() + flower.getWaterConsumptionPerDay() * costPerLitreFor5Years)
                 .sum();
 
         System.out.printf("Total costs are - %.2f $", totalCosts);
+
+    }
+
+    /**
+     * Вы директор огромной сети магазигов. Ваша задача закупить цветы по вашим магазина. Представим, что количество магазинов неограничено.
+     * Максимальное количество на один магазин по 100 цветов. Вначале вы должны забить премиальные магазины цветов, где продаются дорогие цветы.
+     * Цветы нужны только те, которые выращивали чернокожие, это требование вашей целевой аудитории. Но также и те,
+     * что потребляют меньше 120 литров воды в месяц.Материал вазы - только стекло.
+     * Вывести на консоль магазин (товар его), где сумма с продажи всего товара получиться наибольшая и вывести саму сумму.
+     * А также посчиать количество цветов каждой семьи цветов - это нужно для отчетности. Вывести в консоль в порядке возрастания.
+     */
+    private static void task16() throws IOException {
+        List<Flower> flowers = Util.getFlowers();
+        final double costPerLitreForMonth = 30 * 1.39 / 1000;
+        Set<String> vasesMaterial = Set.of("Glass", "Aluminium", "Steel");
+        //Cubic meter of water = 1000 L
+
+        List<Flower> filteredFlowers = flowers.stream()
+                .filter(flower -> "Central African Republic".equalsIgnoreCase(flower.getOrigin()))
+                .filter(flower -> flower.getWaterConsumptionPerDay() * 30 < 120)
+                .filter(flower -> flower.getFlowerVaseMaterial().stream()
+                        .anyMatch("Glass"::equalsIgnoreCase))
+                .sorted(Comparator.comparingDouble(Flower::getPrice))
+                .collect(Collectors.toList());
+
+        double incomeOfExpensiveShop = flowers.stream()
+                .limit(100)
+                .peek(System.out::println)
+                .mapToDouble(Flower::getPrice)
+                .sum();
+
+        System.out.printf("Total income of the most expensive shop is - %.2f $", incomeOfExpensiveShop);
+
+
+        System.out.println("Count of flowers in each family:");
+
+        filteredFlowers.stream()
+                .collect(Collectors.groupingBy(Flower::getPlantFamily, Collectors.counting()))
+                .entrySet()
+                .stream()
+                .sorted(Comparator.comparingLong(Map.Entry::getValue))
+                .forEach(System.out::println);
+
+
 
     }
 }
