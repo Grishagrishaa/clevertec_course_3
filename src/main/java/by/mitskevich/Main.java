@@ -20,21 +20,21 @@ import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-//        task1();
-//        task2();
-//        task3();
-//        task4();
-//        task5();
-//        task6();
-//        task7();
-//        task8();
-//        task9();
-//        task10();
-//        task11();
-//        task12();
-//        task13();
-//        task14();
-//        task15();
+        task1();
+        task2();
+        task3();
+        task4();
+        task5();
+        task6();
+        task7();
+        task8();
+        task9();
+        task10();
+        task11();
+        task12();
+        task13();
+        task14();
+        task15();
         task16();
     }
     private static void task1() throws IOException {
@@ -308,7 +308,7 @@ public class Main {
                 .filter(flower -> flower.getWaterConsumptionPerDay() * 30 < 120)
                 .filter(flower -> flower.getFlowerVaseMaterial().stream()
                         .anyMatch("Glass"::equalsIgnoreCase))
-                .sorted(Comparator.comparingDouble(Flower::getPrice))
+                .sorted(Comparator.comparingDouble(Flower::getPrice).reversed())
                 .collect(Collectors.toList());
 
         double incomeOfExpensiveShop = flowers.stream()
